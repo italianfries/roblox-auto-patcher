@@ -1,10 +1,8 @@
-name: Rust
+name: Build Windows
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 env:
@@ -12,13 +10,20 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Build
-      run: cargo build --verbose
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
 
-    - name: Run tests
-      run: cargo test --verbose
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: roblox-auto-patcher-windows
+          path: target/release/*.exe
